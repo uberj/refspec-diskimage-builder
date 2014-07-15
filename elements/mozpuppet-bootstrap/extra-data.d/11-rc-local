@@ -1,0 +1,9 @@
+#!/bin/bash
+# Write our etc/rc.local into the image
+# (Obviously not suitable for downloadable images).
+
+set -x -e
+
+[ -n "$TMP_HOOKS_PATH" ] || die "Temp hook path not set"
+
+cp $TMP_HOOKS_PATH/etc/rc.local /etc/rc.local
