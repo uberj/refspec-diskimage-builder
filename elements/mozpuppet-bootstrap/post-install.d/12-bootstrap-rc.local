@@ -1,25 +1,55 @@
-#!/bin/bash
-echo "#!/bin/bash
-role=$(curl -s http://169.254.169.254/openstack/latest/meta_data.json | python -c "
-import sys
+#!/usr/bin/env python
+import urllib
 import json
+import subprocess
+
+
+API_END_POINT = 'http://169.254.169.254/openstack/'
+PINNED_METADATA_API_VERSION = '2013-10-17'
+
+
+def halt(reason):
+    print reason
+    print "Halting VM..."
+
+
+def provision(role):
+    provision_command = """
+    /usr/bin/puppet apply --verbose \
+        --hiera_config /etc/mozpuppet/hiera.yaml \
+        --modulepath /etc/mozpuppet/modules/ \
+        -e 'include %s'
+    """ % role
+    p = subprocess.Popen(
+        provision_command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
+    for line in iter(p.stdout.readline, ''):
+        print line,
+
+sf = urllib.urlopen(API_END_POINT)
+versions = sf.read().split()  # get a list of versions
+if PINNED_METADATA_API_VERSION not in versions:
+    print "Couldn't find the correct version (%s) in the offered versions" % (
+        PINNED_METADATA_API_VERSION
+    )
+
+version = versions[-1]  # Choose the most recent version
+
+META_DATA = 'http://169.254.169.254/openstack/%s/meta_data.json' % version
+print META_DATA
+sf = urllib.urlopen(META_DATA)
+
+resp = sf.read()
 try:
-    j = json.loads(sys.stdin.read())
+    j = json.loads(resp)
 except ValueError:
-    # TODO what to do here?
-    print 'Error!'
-    raise
+    halt("Couldn't parse JSON from metadata api.")
 
 if 'meta' in j and 'role' in j['meta']:
-    print j['meta']['role']
+    provision(j['meta']['role'])
 else:
-    # What to do here?
-    print 'none'
-")
-
-echo 'Going to install role $role'
-puppet apply --verbose \
-    --hiera_config /etc/mozpuppet/hiera.yaml \
-    --modulepath /etc/mozpuppet/modules/ \
-    -e 'include $role'" > /etc/rc.local
-
+    halt(
+        "Could not introspect role from instance metadata. Make sure your "
+        "heat template defines an instance's role."
+    )
