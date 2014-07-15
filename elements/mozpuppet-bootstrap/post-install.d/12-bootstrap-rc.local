@@ -1,0 +1,25 @@
+#!/bin/bash
+echo "#!/bin/bash
+role=$(curl -s http://169.254.169.254/openstack/latest/meta_data.json | python -c "
+import sys
+import json
+try:
+    j = json.loads(sys.stdin.read())
+except ValueError:
+    # TODO what to do here?
+    print 'Error!'
+    raise
+
+if 'meta' in j and 'role' in j['meta']:
+    print j['meta']['role']
+else:
+    # What to do here?
+    print 'none'
+")
+
+echo 'Going to install role $role'
+puppet apply --verbose \
+    --hiera_config /etc/mozpuppet/hiera.yaml \
+    --modulepath /etc/mozpuppet/modules/ \
+    -e 'include $role'" > /etc/rc.local
+

@@ -1,0 +1,3 @@
+The purpose of these tools is to build an image that...
+* has Mozilla's puppet code primed and ready to run
+* installs any base packages needed in the image
