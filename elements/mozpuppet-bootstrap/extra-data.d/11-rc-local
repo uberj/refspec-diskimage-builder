@@ -6,4 +6,5 @@ set -x -e
 
 [ -n "$TMP_HOOKS_PATH" ] || die "Temp hook path not set"
 
-cp $TMP_HOOKS_PATH/etc/rc.local /etc/rc.local
+mkdir -p $TMP_HOOKS_PATH/rclocal/
+cp $DIB_DATA_PATH/rc.local $TMP_HOOKS_PATH/rclocal/rc.local

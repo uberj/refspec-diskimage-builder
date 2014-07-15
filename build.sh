@@ -2,23 +2,25 @@
 set -x
 
 IMAGE_ARCH=i386
-ELEMENTS="ubuntu vm mozpuppet-config mozpuppet-bootstrap"
+ELEMENTS="ubuntu vm mozpuppet-bootstrap"
 # TOOD, don't hardcode this
-WORKING_DIR=/root/mozdib
+WORKING_DIR=$(pwd)
 DOCKER_TAG=mozdib
 IMAGE_NAME='image'
 IMAGE_TYPE='qcow2'
 #QEMU_OPTIONS='compat=0.10'
 
-LOCAL_ELEMENTS_PATH=/root/mozdib/elements/
+LOCAL_ELEMENTS_PATH=$WORKING_DIR/elements/
 DOCKER_ELEMENTS_PATH=/tmp/elements/
 
-docker images | grep -q $DOCKER_TAG
-if [ $? -ne 0 ]; then
-    docker build --tag=$DOCKER_TAG .
-fi
+export DIB_DATA_PATH=$WORKING_DIR/data
 
-mkdir -p $WORKING_DIR
+#docker images | grep -q $DOCKER_TAG
+#if [ $? -ne 0 ]; then
+#    docker build --tag=$DOCKER_TAG .
+#fi
+
+mkdir -p $WORKING_DIR/mozdib
 
 # Until we are installing services, we don't need this
 #docker run \

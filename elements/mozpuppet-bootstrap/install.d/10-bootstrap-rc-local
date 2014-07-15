@@ -3,4 +3,4 @@ set -x -e
 
 [ -n "$TMP_HOOKS_PATH" ] || die "Temp hook path not set"
 
-cp ./etc/rc.local $TMP_HOOKS_PATH/
+cp /tmp/in_target.d/rclocal/rc.local /etc/rc.local 

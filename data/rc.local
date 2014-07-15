@@ -11,6 +11,12 @@ PINNED_METADATA_API_VERSION = '2013-10-17'
 def halt(reason):
     print reason
     print "Halting VM..."
+    p = subprocess.Popen(
+        'halt -n', shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
+    for line in iter(p.stdout.readline, ''):
+        print line,
 
 
 def provision(role):
@@ -18,7 +24,7 @@ def provision(role):
         "/usr/bin/puppet apply --verbose "
         "   --hiera_config /etc/mozpuppet/hiera.yaml "
         "   --modulepath /etc/mozpuppet/modules/ "
-        "   -e 'include %s'"
+        "   -e 'include %s'" % role
     )
     p = subprocess.Popen(
         provision_command, shell=True, stdout=subprocess.PIPE,
@@ -26,6 +32,9 @@ def provision(role):
     )
     for line in iter(p.stdout.readline, ''):
         print line,
+    reason, _ = p.communicate()
+    if p.returncode:
+        halt(reason)
 
 sf = urllib.urlopen(API_END_POINT)
 versions = sf.read().split()  # get a list of versions
