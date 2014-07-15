@@ -1,0 +1,4 @@
+#!/bin/bash
+set -x -e
+apt-get -y install git
+git clone --branch ${DIB_MOZ_PUPPET_REF:-master} https://github.com/uberj/refspec-bootstrap.git /etc/mozpuppet

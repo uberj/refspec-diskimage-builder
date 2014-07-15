@@ -1,0 +1,59 @@
+#!/bin/bash
+#set -x
+
+# Install rvm puppet
+# TODO: Boot strap need to work for yum based systems too
+# UBUNTU
+if [ -f /etc/lsb-release ]; then
+	. /etc/lsb-release
+	wget https://apt.puppetlabs.com/puppetlabs-release-${DISTRIB_CODENAME}.deb \
+		-O /tmp/puppetlabs-release-${DISTRIB_CODENAME}.deb
+	sudo dpkg -i /tmp/puppetlabs-release-${DISTRIB_CODENAME}.deb
+	sudo apt-get -y update
+	apt-get -y install puppet
+fi
+
+puppet module --debug --verbose install maestrodev/rvm
+
+# Install rvm
+puppet apply --debug --verbose <<< "
+class bootstrap {
+        rvm_system_ruby {
+          'ruby-1.9.3':
+            ensure      => 'present',
+            default_use => true,
+	    # Binary rubies are not being found, thus we build from source
+            #build_opts  => ['--binary'];
+        }
+
+	rvm_gem {
+	  'librarian-puppet':
+	    name         => 'librarian-puppet',
+	    ruby_version => 'ruby-1.9.3',
+	    ensure       => latest,
+	    require      => Rvm_system_ruby['ruby-1.9.3'];
+	}
+
+	rvm_gem {
+	  'puppet':
+	    name         => 'puppet',
+	    ruby_version => 'ruby-1.9.3',
+	    ensure       => latest,
+	    require      => Rvm_system_ruby['ruby-1.9.3'];
+	}
+}
+
+include rvm
+include bootstrap
+
+Class['bootstrap'] -> Class['rvm']
+"
+# Get rvm into our environment
+. /usr/local/rvm/scripts/rvm
+
+# Use the ruby we installed
+rvm use 1.9.3
+
+pushd /etc/mozpuppet/
+    librarian-puppet update --verbose
+popd
