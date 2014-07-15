@@ -18,6 +18,8 @@ if [ $? -ne 0 ]; then
     docker build --tag=$DOCKER_TAG .
 fi
 
+mkdir -p $WORKING_DIR
+
 # Until we are installing services, we don't need this
 #docker run \
 #	--privileged=true  \
