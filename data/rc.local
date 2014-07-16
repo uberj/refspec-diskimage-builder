@@ -20,12 +20,15 @@ def halt(reason):
 
 
 def provision(role):
+    print "Going to apply role %s" % role
     provision_command = (
         "/usr/bin/puppet apply --verbose "
         "   --hiera_config /etc/mozpuppet/hiera.yaml "
         "   --modulepath /etc/mozpuppet/modules/ "
         "   -e 'include %s'" % role
     )
+    print "Running provision command:"
+    print provision_command
     p = subprocess.Popen(
         provision_command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT
