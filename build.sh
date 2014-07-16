@@ -1,6 +1,8 @@
 #!/bin/bash
 set -x
 
+
+
 IMAGE_ARCH=i386
 ELEMENTS="ubuntu vm mozpuppet-bootstrap"
 # TOOD, don't hardcode this
@@ -13,7 +15,12 @@ IMAGE_TYPE='qcow2'
 LOCAL_ELEMENTS_PATH=$WORKING_DIR/elements/
 DOCKER_ELEMENTS_PATH=/tmp/elements/
 
+####### DIB_ENV #######
 export DIB_DATA_PATH=$WORKING_DIR/data
+DIB_MOZ_PUPPET_REF=${DIB_MOZ_PUPPET_REF:-master}
+DIB_MOZ_BOOTSTRAP_REF=${DIB_MOZ_BOOTSTRAP_REF:-master}
+DIB_MOZ_BOOTSTRAP_REMOTE=${DIB_MOZ_BOOTSTRAP_REMOTE:-https://github.com/uberj/refspec-bootstrap.git}
+DIB_MOZ_PUPPET_REMOTE=${DIB_MOZ_PUPPET_REMOTE:-https://github.com/uberj/refspec-puppet.git}
 
 #docker images | grep -q $DOCKER_TAG
 #if [ $? -ne 0 ]; then
