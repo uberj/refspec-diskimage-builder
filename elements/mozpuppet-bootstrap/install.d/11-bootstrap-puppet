@@ -18,13 +18,13 @@ puppet module --debug --verbose install maestrodev/rvm
 # Install rvm
 puppet apply --debug --verbose <<< "
 class bootstrap {
-        rvm_system_ruby {
-          'ruby-1.9.3':
-            ensure      => 'present',
-            default_use => true,
-	    # Binary rubies are not being found, thus we build from source
-            #build_opts  => ['--binary'];
-        }
+    rvm_system_ruby {
+      'ruby-1.9.3':
+        ensure      => 'present',
+        default_use => true,
+        # Binary rubies are not being found, thus we build from source
+        #build_opts  => ['--binary'];
+    }
 
 	rvm_gem {
 	  'librarian-puppet':

@@ -2,12 +2,12 @@
 set -x -e
 
 [ -n "$DIB_MOZ_PUPPET_REF" ] || die "fail! DIB_MOZ_PUPPET_REF is not set."
+[ -n "$DIB_MOZ_PUPPET_REMOTE" ] || die "fail! DIB_MOZ_PUPPET_REMOTE is not set."
 [ -n "$DIB_MOZ_BOOTSTRAP_REF" ] || die "fail! DIB_MOZ_BOOTSTRAP_REF is not set."
+[ -n "$DIB_MOZ_BOOTSTRAP_REMOTE" ] || die "fail! DIB_MOZ_BOOTSTRAP_REMOTE is not set."
 
 # TODO, copy these repos in from the host machine and remove the git dep
-apt-get -y install git
-git clone --branch ${DIB_MOZ_BOOTSTRAP_REF:-master} $DIB_MOZ_BOOTSTRAP_REMOTE /etc/mozpuppet
+git clone --branch ${DIB_MOZ_BOOTSTRAP_REF} $DIB_MOZ_BOOTSTRAP_REMOTE /etc/mozpuppet
 
-sed -i "s/DIB_MOZ_PUPPET_REF/$DIB_MOZ_PUPPET_REF" /etc/mozpuppet/Puppetfile
-sed -i "s/DIB_MOZ_PUPPET_REMOTE/$DIB_MOZ_PUPPET_REMOTE" /etc/mozpuppet/Puppetfile
-
+sed -i "s#DIB_MOZ_PUPPET_REF#$DIB_MOZ_PUPPET_REF#" /etc/mozpuppet/Puppetfile
+sed -i "s#DIB_MOZ_PUPPET_REMOTE#$DIB_MOZ_PUPPET_REMOTE#" /etc/mozpuppet/Puppetfile
