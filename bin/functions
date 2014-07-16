@@ -1,0 +1,31 @@
+#!/bin/bash
+
+function check_keystone_profile {
+    errors=0
+    [ -z "${OS_USERNAME}" ] && echo "OS_USERNAME is not set" && errors=1
+    [ -z "${OS_TENANT_NAME}" ] && echo 'OS_TENANT_NAME is not set' && errors=1
+    [ -z "${OS_PASSWORD}" ] && echo 'OS_PASSWORD is not set' && errors=1
+    [ -z "${OS_AUTH_URL}" ] && echo 'OS_AUTH_URL is not set' && errors=1
+}
+
+function load_keystone_profile {
+    source $1
+}
+
+function die {
+    echo $1
+    exit 1
+}
+
+function ensure_keystone_profile {
+    check_keystone_profile
+    if [ $errors -ne 0 ]; then
+        # Try loading a keystone profile
+        [ -z "${MOZ_KEYSTONE_PROFILE_PATH}" ] && die 'MOZ_KEYSTONE_PROFILE_PATH is not set and no keystone environment is detected.'
+        source $MOZ_KEYSTONE_PROFILE_PATH
+        check_keystone_profile
+        if [ $errors -ne 0 ]; then
+            die "No keystone environment is active."
+        fi
+    fi
+}

@@ -1,18 +1,8 @@
 #!/bin/bash
 #set -x
+set -e
 
-# Install rvm puppet
-# TODO: Boot strap need to work for yum based systems too
-# UBUNTU
-if [ -f /etc/lsb-release ]; then
-	. /etc/lsb-release
-	wget https://apt.puppetlabs.com/puppetlabs-release-${DISTRIB_CODENAME}.deb \
-		-O /tmp/puppetlabs-release-${DISTRIB_CODENAME}.deb
-	sudo dpkg -i /tmp/puppetlabs-release-${DISTRIB_CODENAME}.deb
-	sudo apt-get -y update
-	apt-get -y install puppet
-fi
-
+install-packages puppet
 puppet module --debug --verbose install maestrodev/rvm
 
 # Install rvm
