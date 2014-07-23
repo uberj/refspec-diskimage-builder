@@ -25,12 +25,13 @@ MOZ_WORKING_DIR=${MOZ_WORKING_DIR:-$(pwd)}
 ####### DIB_ENV #######
 export DIB_DATA_PATH=$MOZ_WORKING_DIR/data
 export DIB_MOZ_PUPPET_REF=${DIB_MOZ_PUPPET_REF:-master}
+export DIB_MOZ_PUPPET_REMOTE=${DIB_MOZ_PUPPET_REMOTE:-https://github.com/uberj/refspec-puppet.git}
+export DIB_MOZ_PUPPET_REMOTE=${DIB_MOZ_PUPPET_REMOTE:-https://github.com/uberj/refspec-puppet.git}
 export DIB_MOZ_BOOTSTRAP_REF=${DIB_MOZ_BOOTSTRAP_REF:-master}
 export DIB_MOZ_BOOTSTRAP_REMOTE=${DIB_MOZ_BOOTSTRAP_REMOTE:-https://github.com/uberj/refspec-bootstrap.git}
-export DIB_MOZ_PUPPET_REMOTE=${DIB_MOZ_PUPPET_REMOTE:-https://github.com/uberj/refspec-puppet.git}
-export DIB_MOZ_PUPPET_REMOTE=${DIB_MOZ_PUPPET_REMOTE:-https://github.com/uberj/refspec-puppet.git}
 
-MOZ_DIB_IMAGE_ARCH=${MOZ_DIB_IMAGE_ARCH:-i386}
+
+MOZ_DIB_IMAGE_ARCH=${MOZ_DIB_IMAGE_ARCH:-amd64}
 # NOTE: these vars can effect ./upload.sh
 export MOZ_DIB_IMAGE_TYPE=${MOZ_DIB_IMAGE_TYPE:-qcow2}
 export MOZ_DIB_IS_PUBLIC=${MOZ_DIB_IS_PUBLIC:-true}
@@ -45,6 +46,7 @@ export DIB_RELEASE=$MOZ_DIB_RELEASE
 
 # We need to verify a keystone profile is loaded or that MOZ_KEYSTONE_PROFILE_PATH is set.
 
+set -x
 ensure_keystone_profile
 echo "Checking for glance access..."
 glance image-list > /dev/null
@@ -69,21 +71,25 @@ done
 echo "Building ${IMAGE_PATH}/MOZ_DIB_IMAGE_NAME.$MOZ_DIB_IMAGE_TYPE..."
 
 mkdir -p ${IMAGE_PATH}
+errors=0
 LOCK=/var/lock/.mozdib.lock
-pushd $IMAGE_PATH
 (
-  # Wait for lock on $LOCK (fd 200) for 1 second
-  flock -x -w 1 200 || die "Concurent builds detected. Couldn't get lock $LOCK"
+    # Wait for lock on $LOCK (fd 200) for 1 second
+    flock -x -w 1 200 || die "Concurent builds detected. Couldn't get lock $LOCK"
 
-  # Do stuff
-    ELEMENTS_PATH=$ELEMENTS_PATH:$MOZ_LOCAL_ELEMENTS_PATH disk-image-create \
-        -a $MOZ_DIB_IMAGE_ARCH \
-        -o $IMAGE_PATH/$MOZ_DIB_IMAGE_NAME \
-        -t $MOZ_DIB_IMAGE_TYPE \
-        -u \
-        $MOZ_DIB_ELEMENTS
+    pushd $IMAGE_PATH
+        # Do stuff
+        ELEMENTS_PATH=$ELEMENTS_PATH:$MOZ_LOCAL_ELEMENTS_PATH disk-image-create \
+            -a $MOZ_DIB_IMAGE_ARCH \
+            -o $IMAGE_PATH/$MOZ_DIB_IMAGE_NAME \
+            -t $MOZ_DIB_IMAGE_TYPE \
+            -u \
+            $MOZ_DIB_ELEMENTS
+
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    popd
+    ./bin/upload.sh $MOZ_DIB_IMAGE_NAME $IMAGE_PATH/$MOZ_DIB_IMAGE_NAME.$MOZ_DIB_IMAGE_TYPE
 
 ) 200>$LOCK
-popd
-
-./bin/upload.sh $MOZ_DIB_IMAGE_NAME $IMAGE_PATH/$MOZ_DIB_IMAGE_NAME.$MOZ_DIB_IMAGE_TYPE

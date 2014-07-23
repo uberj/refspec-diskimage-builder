@@ -8,15 +8,17 @@ API_END_POINT = 'http://169.254.169.254/openstack/'
 PINNED_METADATA_API_VERSION = '2013-10-17'
 
 
-def halt(reason):
+def error(reason):
+    # TODO, what to do here? We need to allow for testing to just shutting the
+    # machines down is bad. We need a way to alert based on this.
     print reason
-    print "Halting VM..."
-    p = subprocess.Popen(
-        'halt -n', shell=True, stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
-    )
-    for line in iter(p.stdout.readline, ''):
-        print line,
+    print "Hit an error. Provisioning failed."
+    #p = subprocess.Popen(
+    #    'halt -n', shell=True, stdout=subprocess.PIPE,
+    #    stderr=subprocess.STDOUT
+    #)
+    #for line in iter(p.stdout.readline, ''):
+    #    print line,
 
 
 def provision(role):
@@ -37,7 +39,7 @@ def provision(role):
         print line,
     reason, _ = p.communicate()
     if p.returncode:
-        halt(reason)
+        error(reason)
 
 sf = urllib.urlopen(API_END_POINT)
 versions = sf.read().split()  # get a list of versions
@@ -56,12 +58,12 @@ resp = sf.read()
 try:
     j = json.loads(resp)
 except ValueError:
-    halt("Couldn't parse JSON from metadata api.")
+    error("Couldn't parse JSON from metadata api.")
 
 if 'meta' in j and 'role' in j['meta']:
     provision(j['meta']['role'])
 else:
-    halt(
+    error(
         "Could not introspect role from instance metadata. Make sure your "
         "heat template defines an instance's role."
     )
