@@ -72,7 +72,7 @@ try:
 except ValueError:
     error("Couldn't parse JSON from metadata api.")
 
-with open('/etc/profile.d/auto_provision.sh', 'w+') as fd:
+with open('/etc/environment', 'a+') as fd:
     try:
         write_env(j, fd)
     except Exception, e:
