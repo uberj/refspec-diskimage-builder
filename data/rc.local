@@ -26,7 +26,7 @@ def write_env(blob, fd, prev=[]):
     for k, v in blob.items():
         if not isinstance(v, dict):
             k = k.replace('.', '_').replace('-', '_')
-            var_name = '_'.join([k] + prev)
+            var_name = '_'.join(prev + [k]).upper()
             fd.write('export %s="%s"\n' % (var_name, re.sub('"', '\\"', str(v))))
         else:
             cur = prev + [k]
