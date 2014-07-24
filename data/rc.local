@@ -27,7 +27,7 @@ def write_env(blob, fd, prev=[]):
         if not isinstance(v, dict):
             k = k.replace('.', '_').replace('-', '_')
             var_name = '_'.join([k] + prev)
-            fd.write('%s="%s"\n' % (var_name, re.sub('"', '\\"', str(v))))
+            fd.write('export %s="%s"\n' % (var_name, re.sub('"', '\\"', str(v))))
         else:
             cur = prev + [k]
             write_env(v, fd, prev=cur)
@@ -72,7 +72,7 @@ try:
 except ValueError:
     error("Couldn't parse JSON from metadata api.")
 
-with open('/etc/environment', 'w') as fd:
+with open('/etc/profile.d/auto_provision.sh', 'w+') as fd:
     try:
         write_env(j, fd)
     except Exception, e:
