@@ -1,0 +1,13 @@
+#!/bin/bash
+
+RVM_RC=/etc/profile.d/rvm.sh
+RUBY_VERSION=ruby-1.9.3-p547
+
+source $RVM_RC
+
+rvm use ruby $RUBY_VERISON
+
+puppet apply --verbose \
+    --hiera_config /etc/mozpuppet/modules/mozpuppet/hiera.yaml \
+    --modulepath /etc/mozpuppet/modules/ \
+    -e 'include $1'
