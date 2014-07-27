@@ -36,7 +36,7 @@ MOZ_DIB_IMAGE_ARCH=${MOZ_DIB_IMAGE_ARCH:-amd64}
 export MOZ_DIB_IMAGE_TYPE=${MOZ_DIB_IMAGE_TYPE:-qcow2}
 export MOZ_DIB_IS_PUBLIC=${MOZ_DIB_IS_PUBLIC:-true}
 export MOZ_KEYSTONE_PROFILE_PATH=${MOZ_KEYSTONE_PROFILE_PATH}
-MOZ_LOCAL_ELEMENTS_PATH=${MOZ_WORKING_DIR}/elements/
+MOZ_LOCAL_ELEMENTS_PATH=${MOZ_WORKING_DIR}/elements/:${MOZ_WORKING_DIR}/heat-templates/hot/software-config/elements/
 MOZ_DIB_ELEMENTS="${MOZ_DIB_DISTRO} vm mozpuppet-bootstrap"
 
 [ -n "$MOZ_DIB_DISTRO" ] || die "Please specifify a distro by setting MOZ_DIB_DISTRO"
