@@ -37,8 +37,15 @@ export MOZ_DIB_IMAGE_TYPE=${MOZ_DIB_IMAGE_TYPE:-qcow2}
 export MOZ_DIB_IS_PUBLIC=${MOZ_DIB_IS_PUBLIC:-true}
 export MOZ_KEYSTONE_PROFILE_PATH=${MOZ_KEYSTONE_PROFILE_PATH}
 MOZ_LOCAL_ELEMENTS_PATH=${MOZ_WORKING_DIR}/elements/:${MOZ_WORKING_DIR}/heat-templates/hot/software-config/elements/:${MOZ_WORKING_DIR}/tripleo-image-elements/elements/:${MOZ_WORKING_DIR}/diskimage-builder/elements/
-#MOZ_DIB_ELEMENTS="${MOZ_DIB_DISTRO} vm mozpuppet-bootstrap heat-config-script"
-MOZ_DIB_ELEMENTS="${MOZ_DIB_DISTRO} vm heat-config-script os-collect-config os-refresh-config os-apply-config"
+# TODO, all these elements might not be necessary, but including them for now because they "work"
+MOZ_DIB_ELEMENTS="${MOZ_DIB_DISTRO} vm
+    heat-cfntools
+    heat-config-cfn-init
+    heat-config
+    heat-config-script
+    os-collect-config
+    os-refresh-config
+    os-apply-config"
 
 [ -n "$MOZ_DIB_DISTRO" ] || die "Please specifify a distro by setting MOZ_DIB_DISTRO"
 [ -n "$MOZ_DIB_RELEASE" ] || die "Please specifify the $MOZ_DIB_DISTRO release by setting MOZ_DIB_RELEASE"
