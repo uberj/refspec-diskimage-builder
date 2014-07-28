@@ -39,11 +39,13 @@ export MOZ_KEYSTONE_PROFILE_PATH=${MOZ_KEYSTONE_PROFILE_PATH}
 MOZ_LOCAL_ELEMENTS_PATH=${MOZ_WORKING_DIR}/elements/:${MOZ_WORKING_DIR}/heat-templates/hot/software-config/elements/:${MOZ_WORKING_DIR}/tripleo-image-elements/elements/:${MOZ_WORKING_DIR}/diskimage-builder/elements/
 # TODO, all these elements might not be necessary, but including them for now because they "work"
 MOZ_DIB_ELEMENTS="${MOZ_DIB_DISTRO} vm
+    mozpuppet-bootstrap
     heat-cfntools
     heat-config-cfn-init
     heat-config
     heat-config-script
     os-collect-config
+    moz-heat-config-puppet
     os-refresh-config
     os-apply-config"
 
