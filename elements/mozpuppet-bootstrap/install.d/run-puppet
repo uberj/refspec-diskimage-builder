@@ -10,4 +10,4 @@ set -x
 puppet apply --verbose \
     --hiera_config /etc/mozpuppet/modules/mozpuppet/hiera.yaml \
     --modulepath /etc/mozpuppet/modules/ \
-    -e "include $1"
+    $1

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -x -e
+
+[ -n "$TMP_HOOKS_PATH" ] || die "Temp hook path not set"
+
+mkdir -p $TMP_HOOKS_PATH/runpuppet/
+cp $DIB_DATA_PATH/run-puppet $TMP_HOOKS_PATH/runpuppet/run-puppet

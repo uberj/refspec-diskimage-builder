@@ -1,0 +1,7 @@
+#!/bin/bash
+set -x -e
+
+[ -n "$TMP_HOOKS_PATH" ] || die "Temp hook path not set"
+
+cp /tmp/in_target.d/install.d/run-puppet /usr/bin/run-puppet
+chmod +x /usr/bin/run-puppet

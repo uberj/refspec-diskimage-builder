@@ -50,12 +50,7 @@ def main(argv=sys.argv):
     with os.fdopen(os.open(fn, os.O_CREAT | os.O_WRONLY, 0o700), 'w') as f:
         f.write(c.get('config', ''))
 
-    cmd = [
-        'puppet', 'apply',
-            '--hiera_config', MOZ_HIERA_CONF,
-            '--modulepath', MOZ_PUPPET_PATH,
-            '--detailed-exitcodes', fn
-    ]
+    cmd = ['/usr/bin/run-puppet', fn]
     log.debug('Running %s %s' % (env_debug, ' '.join(cmd)))
     try:
         subproc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
