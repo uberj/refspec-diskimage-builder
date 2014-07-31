@@ -65,9 +65,9 @@ if [ $? -ne 0 ]; then
 fi
 
 
-#     <distro>-<distro-version>-<arch>-<mozpuppet-version>-<YYYYMMDDSS>
+#     <distro>-<distro-version>.<arch>-<mozpuppet-version>-<YYYYMMDDSS>
 # Find a suitable image name that hasn't been used
-BASE_IMAGE_NAME=${MOZ_DIB_DISTRO}-${MOZ_DIB_RELEASE}-${MOZ_DIB_IMAGE_ARCH}-${DIB_MOZ_PUPPET_REF}
+BASE_IMAGE_NAME=${MOZ_DIB_DISTRO}-${MOZ_DIB_RELEASE}.${MOZ_DIB_IMAGE_ARCH}-${DIB_MOZ_PUPPET_REF}
 IMAGE_PATH=${MOZ_WORKING_DIR}/mozdib/
 
 MOZ_DIB_IMAGE_NAME=${BASE_IMAGE_NAME}.`date +%Y%m%d%S`
