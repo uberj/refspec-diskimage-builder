@@ -70,7 +70,7 @@ fi
 BASE_IMAGE_NAME=${MOZ_DIB_DISTRO}-${MOZ_DIB_RELEASE}.${MOZ_DIB_IMAGE_ARCH}-${DIB_MOZ_PUPPET_REF}
 IMAGE_PATH=${MOZ_WORKING_DIR}/mozdib/
 
-MOZ_DIB_IMAGE_NAME=${BASE_IMAGE_NAME}.`date +%Y%m%d%S`
+MOZ_DIB_IMAGE_NAME=${BASE_IMAGE_NAME}.`date +%Y%m%d%M`
 while true; do
     if [ -f $MOZ_DIB_IMAGE_NAME ]; then  # If it exists already, gen a new name
         MOZ_DIB_IMAGE_NAME=${IMAGE_PATH}/${BASE_IMAGE_NAME}.`date +%Y%m%d%S`

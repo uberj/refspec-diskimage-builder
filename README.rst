@@ -1,6 +1,6 @@
 Install steps on centos6::
 
-        yum install -y gcc python-devel python-glanceclient nc
+        yum install -y gcc python-devel python-glanceclient nc libxml2-devel libxslt-devel
         git clone git@github.com:uberj/refspec-diskimage-builder.git
         cd refspec-diskimage-builder/
         git submodule init
@@ -21,4 +21,4 @@ The purpose of these tools is to build an image that...
 
 Right now only ubuntu images can be created::
 
-  MOZ_DIB_DISTRO=ubuntu MOZ_DIB_RELEASE=trusty ./build.sh
+  DIB_MOZ_PUPPET_REF=0.3.0 MOZ_DIB_DISTRO=ubuntu MOZ_DIB_RELEASE=trusty ./build.sh
